@@ -1,0 +1,12 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: azuredisk-storageclass2
+  labels:
+    Creator: Ankit_Raj
+provisioner: disk.csi.azure.com
+parameters:
+  skuname: Standard_LRS
+  kind: Managed
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer

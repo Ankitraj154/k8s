@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: ingress-nginx
+  labels:
+    app: python-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: python-app
+  template:
+    metadata:
+      labels:
+        app: python-app
+    spec:
+      containers:
+      - name: python-app
+        image: ankitraj1100/flaskapp:1.2
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MYSQL_HOST
+          value: 10.100.68.182
+        - name: MYSQL_DB
+          value: mydb  # Replace with your MySQL database name
+        - name: MYSQL_USER
+          value: root   # Replace with your MySQL user
+        - name: MYSQL_PASSWORD
+          value: admin  # Replace with your MySQL password
+        resources:
+          limits:
+            memory: "512Mi"
+          requests:
+            memory: "512Mi"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        startupProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+
+        

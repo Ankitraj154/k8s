@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-pv
+  namespace: ingress-nginx
+spec:
+  capacity:
+    storage: 1Gi  # Adjust the storage size as needed
+  volumeMode: Filesystem  # Volume mode can be Filesystem or Block
+  accessModes:
+    - ReadWriteOnce  # Access mode: ReadWriteOnce, ReadOnlyMany, ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain  # Policy for what happens to the PV after it's released
+  storageClassName: local-storage  # Optional: Name of the StorageClass to which this PV belongs
+  local:
+    path: /mnt # Path on the node where the local storage is located
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - ip-172-31-7-205.ap-south-1.compute.internal  # Replace with your actual node name

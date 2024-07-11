@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: ingress-nginx
+  labels:
+    app: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:5.7
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: admin  # Replace with your MySQL root password
+            - name: MYSQL_DATABASE
+              value: mydb  # Replace with your MySQL database name
+            - name: MYSQL_USER
+              value: admin  # Replace with your MySQL user
+            - name: MYSQL_PASSWORD
+              value: admin  
+          volumeMounts:
+            - mountPath: "/var/lib/mysql"
+              name: sql-storage
+          resources:
+            requests:
+              memory: "1Gi"
+              
+            limits:
+              memory: "1Gi"
+              
+      volumes:
+        - name: sql-storage
+          persistentVolumeClaim:
+            claimName: local-pvc
